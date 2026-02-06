@@ -1,0 +1,363 @@
+{
+  "info": {
+    "_postman_id": "644c6260-37a9-4766-8394-fff55947bfc2",
+    "name": "API_Testing_of_Restful_Booker",
+    "description": "### Welcome to Postman! This is your first collection. \n\nCollections are your starting point for building and testing APIs. You can use this one to:\n\n• Group related requests\n• Test your API in real-world scenarios\n• Document and share your requests\n\nUpdate the name and overview whenever you’re ready to make it yours.\n\n[Learn more about Postman Collections.](https://learning.postman.com/docs/collections/collections-overview/)",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "50461583",
+    "_collection_link": "https://go.postman.co/collection/50461583-644c6260-37a9-4766-8394-fff55947bfc2?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "Create booking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var jsonData = pm.response.json();",
+              "",
+              "pm.environment.set(\"id\", jsonData.bookingid); "
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var first_name = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+              "console.log(first_name)",
+              "pm.environment.set(\"firstname\", first_name)",
+              "",
+              "var price = pm.variables.replaceIn(\"{{$randomInt}}\")",
+              "pm.environment.set(\"price\", price)",
+              "",
+              "const moment = require('moment')",
+              "const today = moment()",
+              "var checkin = today.add(5,'d').add(2,'M').format(\"YYYY-MM-DD\")",
+              "console.log(checkin)",
+              "pm.environment.set('checkin',checkin)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"{{firstname}}\",\n    \"lastname\": \"ABc\",\n    \"totalprice\": {{price}},\n    \"depositpaid\": true,\n    \"bookingdates\": {\n        \"checkin\": \"{{checkin}}\",\n        \"checkout\": \"2019-01-01\"\n    },\n    \"additionalneeds\": \"Breakfast\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/booking/",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "booking",
+            ""
+          ]
+        },
+        "description": "This is a GET request and it is used to \"get\" data from an endpoint. There is no request body for a GET request, but you can use query parameters to help specify the resource you want data on (e.g., in this request, we have `id=1`).\n\nA successful GET response will have a `200 OK` status, and should include some kind of response body - for example, HTML web content or JSON data."
+      },
+      "response": []
+    },
+    {
+      "name": "Search bookig",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var status = pm.response.code;",
+              "console.log(status)",
+              "",
+              "if(status == 200)",
+              "{",
+              "    var jsonData = pm.response.json()",
+              "",
+              "    pm.test(\"Check if the firstname is correct\", function (){",
+              "        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"firstname\")) ",
+              "    })",
+              "    pm.test(\"Check if the firstname is not empty\", function () {",
+              "        pm.expect(jsonData.firstname).to.not.be.empty",
+              "    })",
+              "    pm.test(\"Check if the firstname is not null\", function () {",
+              "        pm.expect(jsonData.firstname).to.not.be.null",
+              "    })",
+              "    pm.test(\"Check if the firstname length is at least 2\", function () {",
+              "        pm.expect(jsonData.firstname.length).to.be.at.least(2)",
+              "    })",
+              "    pm.test(\"Check if the firstname length is at most 30\", function () {",
+              "        pm.expect(jsonData.firstname.length).to.be.at.most(30)",
+              "    })",
+              "    pm.test(\"Check if the firstname is string\", function () {",
+              "        pm.expect(jsonData.firstname).to.be.a(\"string\")",
+              "    })",
+              "    pm.test(\"Check if the firstname has no special character\", function () {",
+              "        pm.expect(jsonData.firstname).to.match(/^[A-Za-z0-9]+$/);",
+              "    });",
+              "    pm.test(\"Check if the total price is correct\", function () {",
+              "        pm.expect(jsonData.totalprice.toString()).to.eql(pm.environment.get(\"price\"))",
+              "    })",
+              "",
+              "    pm.test(\"Check if the checkin date is correct\", function () {",
+              "        pm.expect(jsonData.bookingdates.checkin).to.eql(pm.environment.get(\"checkin\"))",
+              "    }) ",
+              "}   else if(status==404){",
+              "    pm.test(\"Not Found\")",
+              "}   else if(status == 401 || status == 403){",
+              "    pm.test(\"Unauthorized or Forbidden\")",
+              "}   else{",
+              "    pm.test(\"Unexpected Status Code\")",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/booking/{{id}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    },
+    {
+      "name": "Auth",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var status = pm.response.code;",
+              "console.log(status)",
+              "",
+              "if(status == 200)",
+              "{",
+              "    var jsonData = pm.response.json();",
+              "    pm.environment.set(\"token\", jsonData.token);",
+              "    pm.test(\"Success\")",
+              "}   else{",
+              "    pm.test(\"Something went wrong\")",
+              "}",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"username\": \"{{username}}\",\n\t\"password\": \"{{password}}\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/auth/",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "auth",
+            ""
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Update booking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "var updated_firstname = pm.variables.replaceIn(\"{{$randomFirstName}}\")",
+              "console.log(updated_firstname)",
+              "pm.environment.set(\"updated_firstname\", updated_firstname)"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"firstname\" : \"{{updated_firstname}}\",\n\t\"lastname\" : \"Brown\",\n\t\"totalprice\" : 111,\n\t\"depositpaid\" : true,\n\t\"bookingdates\" : {\n    \t\"checkin\" : \"2018-01-01\",\n    \t\"checkout\" : \"2019-01-01\"\n\t},\n\t\"additionalneeds\" : \"Breakfast\"\n}\n",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/booking/{{id}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Delete",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Cookie",
+            "value": "token={{token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseURL}}/booking/{{id}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "Verify After Update",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var status = pm.response.code;",
+              "console.log(status)",
+              "",
+              "if(status == 200)",
+              "{",
+              "    var jsonData = pm.response.json()",
+              "",
+              "    pm.test(\"Check if the firstname is correct\", function (){",
+              "        pm.expect(jsonData.firstname).to.eql(pm.environment.get(\"updated_firstname\")) ",
+              "    })",
+              "    pm.test(\"Check if the firstname is not empty\", function () {",
+              "        pm.expect(jsonData.firstname).to.not.be.empty",
+              "    })",
+              "    pm.test(\"Check if the firstname is not null\", function () {",
+              "        pm.expect(jsonData.firstname).to.not.be.null",
+              "    })",
+              "    pm.test(\"Check if the firstname length is at least 2\", function () {",
+              "        pm.expect(jsonData.firstname.length).to.be.at.least(2)",
+              "    })",
+              "    pm.test(\"Check if the firstname length is at most 30\", function () {",
+              "        pm.expect(jsonData.firstname.length).to.be.at.most(30)",
+              "    })",
+              "    pm.test(\"Check if the firstname is string\", function () {",
+              "        pm.expect(jsonData.firstname).to.be.a(\"string\")",
+              "    })",
+              "    pm.test(\"Check if the firstname has no special character\", function () {",
+              "        pm.expect(jsonData.firstname).to.match(/^[A-Za-z0-9]+$/);",
+              "    })",
+              "}   else if(status==404){",
+              "    pm.test(\"Not Found\")",
+              "}   else if(status == 401 || status == 403){",
+              "    pm.test(\"Unauthorized or Forbidden\")",
+              "}   else{",
+              "    pm.test(\"Unexpected Status Code\")",
+              "}"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n\t\"name\": \"Add your name in the body\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{baseURL}}/booking/{{id}}",
+          "host": [
+            "{{baseURL}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        },
+        "description": "This is a POST request, submitting data to an API via the request body. This request submits JSON data, and the data is reflected in the response.\n\nA successful POST request typically returns a `200 OK` or `201 Created` response code."
+      },
+      "response": []
+    }
+  ]
+}
