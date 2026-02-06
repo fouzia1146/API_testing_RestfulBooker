@@ -23,7 +23,7 @@ This project demonstrates API testing using Postman, providing a collection of t
 1. Postman: If you haven't already, [download and install Postman.](https://www.postman.com/downloads/)
 2. Clone the repository:
  ```console 
-  git clone [https://github.com/fouzia1146/API_testing_RestfulBooker]
+  git clone [https://github.com/fouzia1146/Automated_API_testing_RestfulBooker_with_Newman_Report]
 ```
 3. Import the Postman collection:
     - Open Postman.
