@@ -23,7 +23,7 @@ This project demonstrates API testing using Postman, providing a collection of t
 1. Postman: If you haven't already, [download and install Postman.](https://www.postman.com/downloads/)
 2. Clone the repository:
  ```console 
-  git clone https://github.com/ebrahimhossaincse/Automated-Testing-of-Rest-Booking-API-with-Newman-Report.git
+  git clone [https://github.com/fouzia1146/API_testing_RestfulBooker]
 ```
 3. Import the Postman collection:
     - Open Postman.
@@ -225,10 +225,10 @@ This project demonstrates API testing using Postman, providing a collection of t
 ## Run Command:  
 - Run Command for Console: 
 ```console 
-newman run Ebrahim_Hossain_SQA.postman_collection.json -e Ebrahim_Hossain_SQA.postman_environment.json 
+newman run API_Testing_of_Restful_Booker.postman_collection.json -e API_ENV.postman_environment.json
 ```
 - Run Command for Report: 
 ```console 
-newman run Ebrahim_Hossain_SQA.postman_collection.json -e Ebrahim_Hossain_SQA.postman_environment.json -r cli,htmlextra
+newman run API_Testing_of_Restful_Booker.postman_collection.json -e API_ENV.postman_environment.json -r cli,htmlextra
 ```
 
